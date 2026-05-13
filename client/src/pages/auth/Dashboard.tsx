@@ -1,13 +1,27 @@
 import { useEffect, useState } from "react";
-import { DollarSign, ShoppingCart, Package, AlertTriangle, TrendingUp} from "lucide-react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer} from "recharts";
+import {
+    DollarSign,
+    ShoppingCart,
+    Package,
+    AlertTriangle,
+    TrendingUp,
+} from "lucide-react";
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+} from "recharts";
 import { getProducts } from "../../api/product";
 import { getOrders } from "../../api/Order";
 import { Product, Order } from "../../types";
 import StatCard from "../../components/ui/StatCard";
 import Badge from "../../components/ui/Badge";
 
-// Skeleton Loader 
+// Skeleton Loader
 const Skeleton = ({ className }: { className?: string }) => (
     <div className={`animate-pulse bg-gray-200 rounded-lg ${className}`} />
 );
@@ -37,19 +51,20 @@ export default function DashboardPage() {
         .filter((o) => o.status === "delivered")
         .reduce((sum, o) => sum + o.totalAmount, 0);
 
-    const lowStock = products.filter(
-        (p) => p.stock > 0 && p.stock < 10
-    ).length;
+    const lowStock = products.filter((p) => p.stock > 0 && p.stock < 10).length;
 
     const outOfStock = products.filter((p) => p.stock === 0).length;
 
     const recentOrders = [...orders]
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .sort(
+            (a, b) =>
+                new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+        )
         .slice(0, 5);
 
-    // Chart Data 
-    const chartData = orders.reduce(
-        (acc: { date: string; revenue: number }[], order) => {
+    // Chart Data
+    const chartData = orders
+        .reduce((acc: { date: string; revenue: number }[], order) => {
             const date = new Date(order.createdAt).toLocaleDateString("en-NG", {
                 month: "short",
                 day: "numeric",
@@ -61,18 +76,15 @@ export default function DashboardPage() {
                 acc.push({ date, revenue: order.totalAmount });
             }
             return acc;
-        },
-        []
-    ).slice(-7).reverse(); // Last 7 days
+        }, [])
+        .slice(-7)
+        .reverse(); // Last 7 days
 
-    //  Order Status Count 
-    const statusCount = orders.reduce(
-        (acc: Record<string, number>, order) => {
-            acc[order.status] = (acc[order.status] || 0) + 1;
-            return acc;
-        },
-        {}
-    );
+    //  Order Status Count
+    const statusCount = orders.reduce((acc: Record<string, number>, order) => {
+        acc[order.status] = (acc[order.status] || 0) + 1;
+        return acc;
+    }, {});
 
     // Loading State
     if (loading) {
@@ -94,7 +106,6 @@ export default function DashboardPage() {
 
     return (
         <div className="space-y-6">
-
             {/*  Stat Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <StatCard
@@ -129,7 +140,6 @@ export default function DashboardPage() {
 
             {/* Charts Row  */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
                 {/* Revenue Chart */}
                 <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-5">
                     <div className="flex items-center justify-between mb-6">
@@ -163,9 +173,12 @@ export default function DashboardPage() {
                                     tickLine={false}
                                     tickFormatter={(v) => `₦${v}`}
                                 />
-                                
+
                                 <Tooltip
-                                    formatter={(value: unknown) => [`₦${Number(value).toLocaleString()}`, "Revenue"]}
+                                    formatter={(value: unknown) => [
+                                        `₦${Number(value).toLocaleString()}`,
+                                        "Revenue",
+                                    ]}
                                     contentStyle={{
                                         borderRadius: "8px",
                                         border: "1px solid #E5E7EB",
@@ -239,16 +252,21 @@ export default function DashboardPage() {
                         <table className="w-full text-sm">
                             <thead>
                                 <tr className="bg-gray-50 border-b border-gray-100">
-                                    {["Order ID", "Customer", "Items", "Total", "Status", "Date"].map(
-                                        (h) => (
-                                            <th
-                                                key={h}
-                                                className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide"
-                                            >
-                                                {h}
-                                            </th>
-                                        )
-                                    )}
+                                    {[
+                                        "Order ID",
+                                        "Customer",
+                                        "Items",
+                                        "Total",
+                                        "Status",
+                                        "Date",
+                                    ].map((h) => (
+                                        <th
+                                            key={h}
+                                            className="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide"
+                                        >
+                                            {h}
+                                        </th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
@@ -264,7 +282,8 @@ export default function DashboardPage() {
                                             {order.customer.name}
                                         </td>
                                         <td className="px-5 py-3.5 text-gray-500">
-                                            {order.items.length} item{order.items.length > 1 ? "s" : ""}
+                                            {order.items.length} item
+                                            {order.items.length > 1 ? "s" : ""}
                                         </td>
                                         <td className="px-5 py-3.5 font-medium text-gray-800">
                                             ₦{order.totalAmount.toLocaleString()}
