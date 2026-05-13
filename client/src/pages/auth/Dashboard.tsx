@@ -63,7 +63,7 @@ export default function DashboardPage() {
             return acc;
         },
         []
-    ).slice(-7); // Last 7 days
+    ).slice(-7).reverse(); // Last 7 days
 
     //  Order Status Count 
     const statusCount = orders.reduce(

@@ -49,7 +49,7 @@ export default function StatCard({
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1 leading-tight">
                     {label}
                 </p>
                 <p className="text-2xl font-display font-bold text-gray-900">
